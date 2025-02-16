@@ -142,9 +142,12 @@ u32 GetProcesses(struct Process** ps) {
             }
             *ps = t;
         }
-
         (*ps)[pos].pid = pe32.th32ProcessID;
         (*ps)[pos].ppid = pe32.th32ParentProcessID;
+        (*ps)[pos].bits = GetProcessBits((*ps)[pos].pid);
+        if ((*ps)[pos].bits == 0) {
+            continue;
+        }
         (*ps)[pos].name = _strdup(pe32.szExeFile);
         if ((*ps)[pos].name == NULL) {
             for (u32 i = 0; i < pos; i++) {
@@ -154,12 +157,12 @@ u32 GetProcesses(struct Process** ps) {
             CloseHandle(hProcessSnap);
             return 0;
         }
-        (*ps)[pos].bits = GetProcessBits((*ps)[pos].pid);
         (*ps)[pos].path = GetProcessPath((*ps)[pos].pid);
         (*ps)[pos].si = GetProcessIcon((*ps)[pos].path);
         (*ps)[pos].si = NULL;
         pos++;
     } while (Process32Next(hProcessSnap, &pe32));
+    FreeProcesses(*ps, pos);
     CloseHandle(hProcessSnap);
     return pos;
 }

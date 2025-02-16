@@ -8,6 +8,5 @@ int main() {
     for (int i = 0; i < size; ++i) {
         printf("%s - %d\n", processes[i].name, processes[i].bits);
     }
-    FreeProcesses(processes, size);
     return 0;
 }
