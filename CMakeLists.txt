@@ -3,7 +3,7 @@ project(libc C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_library(libc SHARED libc.c)
+add_library(libc SHARED libc.c libc.h)
 
 set_target_properties(libc PROPERTIES OUTPUT_NAME "c")
 

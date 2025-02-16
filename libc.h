@@ -27,10 +27,6 @@ struct Process {
     signed char* si;
 };
 
-signed char* GetProcessIcon(const char* path);
-char* GetProcessPath(DWORD pid);
-u32 GetProcessBits(DWORD pid);
-void FreeProcesses(struct Process* ps, u32 size);
 u32 GetProcesses(struct Process** ps);
 
 #endif
