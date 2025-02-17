@@ -2,7 +2,6 @@
 #define LIBC_LIBRARY_H
 
 #include <stdint.h>
-#include <windows.h>
 
 // 读取进程信息和虚拟内存
 #define PROCESS_READ_ACCESS (PROCESS_QUERY_INFORMATION | PROCESS_VM_READ)
@@ -17,15 +16,19 @@
  // 操作虚拟内存
 #define PROCESS_VM_OPERATION_ACCESS (PROCESS_VM_OPERATION)
 
+typedef char* string;
 typedef uint32_t u32;
 
-struct _Process_ {
-    // 进程id
+typedef struct tagProcess {
+    // id
     u32 pid;
-    // 进程父id
+    // 父id
     u32 ppid;
-};
-typedef struct _Process_ Process;
+    // 名称
+    string name;
+    // 线程数量
+    u32 tc;
+} Process;
 
 u32 GetProcesses(Process** processes);
 

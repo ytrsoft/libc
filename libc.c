@@ -13,7 +13,6 @@ u32 GetProcesses(Process** processes) {
     if (hProcessSnap == INVALID_HANDLE_VALUE) {
         return p;
     }
-
     pe32.dwSize = sizeof(PROCESSENTRY32);
     *processes = (Process*)malloc(capacity * sizeof(Process));
     if (*processes == NULL) {
@@ -37,9 +36,10 @@ u32 GetProcesses(Process** processes) {
         }
         (*processes)[p].pid = pe32.th32ProcessID;
         (*processes)[p].ppid = pe32.th32ParentProcessID;
+        (*processes)[p].name = strdup(pe32.szExeFile);
+        (*processes)[p].tc = pe32.cntThreads;
         p++;
     } while (Process32Next(hProcessSnap, &pe32));
-
     CloseHandle(hProcessSnap);
     return p;
 }
