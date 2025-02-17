@@ -14,19 +14,6 @@ typedef char* string;
 typedef uint32_t u32;
 typedef unsigned char byte;
 
-typedef struct tagProcess {
-    // id
-    u32 pid;
-    // 父id
-    u32 ppid;
-    // 名称
-    string name;
-    // 线程数量
-    u32 tc;
-} Process;
-
-u32 GetProcesses(Process** processes);
-
-LONG GetProcessIcon(u32 pid, byte* icon);
+int GetProcessIds(u32** ids);
 
 #endif
