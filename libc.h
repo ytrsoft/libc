@@ -3,21 +3,16 @@
 
 #include <stdint.h>
 
-// 读取进程信息和虚拟内存
+// 读取权限
 #define PROCESS_READ_ACCESS (PROCESS_QUERY_INFORMATION | PROCESS_VM_READ)
-// 写入进程的虚拟内存
+// 写入权限
 #define PROCESS_WRITE_ACCESS (PROCESS_VM_WRITE)
-// 终止进程
-#define PROCESS_TERMINATE_ACCESS (PROCESS_TERMINATE)
-// 创建线程
-#define PROCESS_THREAD_ACCESS (PROCESS_CREATE_THREAD)
-// 复制进程句柄
-#define PROCESS_DUP_HANDLE_ACCESS (PROCESS_DUP_HANDLE)
- // 操作虚拟内存
-#define PROCESS_VM_OPERATION_ACCESS (PROCESS_VM_OPERATION)
+// 获取图标
+#define ICON_FLAGS (SHGFI_ICON | SHGFI_SMALLICON)
 
 typedef char* string;
 typedef uint32_t u32;
+typedef unsigned char byte;
 
 typedef struct tagProcess {
     // id
@@ -31,5 +26,7 @@ typedef struct tagProcess {
 } Process;
 
 u32 GetProcesses(Process** processes);
+
+LONG GetProcessIcon(u32 pid, byte* icon);
 
 #endif

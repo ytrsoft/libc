@@ -43,3 +43,61 @@ u32 GetProcesses(Process** processes) {
     CloseHandle(hProcessSnap);
     return p;
 }
+
+typedef unsigned char byte;
+
+LONG GetProcessIcon(u32 pid, byte* icon) {
+    HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, pid);
+    if (hSnapshot == INVALID_HANDLE_VALUE) {
+        return 0;
+    }
+
+    MODULEENTRY32 me32;
+    me32.dwSize = sizeof(MODULEENTRY32);
+    if (!Module32First(hSnapshot, &me32)) {
+        CloseHandle(hSnapshot);
+        return 0;
+    }
+
+    char szFilePath[MAX_PATH];
+    strcpy(szFilePath, me32.szExePath);
+
+    SHFILEINFO shFileInfo;
+    if (SHGetFileInfo(szFilePath, 0, &shFileInfo, sizeof(shFileInfo), SHGFI_ICON | SHGFI_SMALLICON)) {
+        HICON hIcon = shFileInfo.hIcon;
+
+        ICONINFO iconInfo;
+        if (GetIconInfo(hIcon, &iconInfo)) {
+            BITMAP bmp;
+            GetObject(iconInfo.hbmColor, sizeof(BITMAP), &bmp);
+            LONG width = bmp.bmWidth;
+            LONG height = bmp.bmHeight;
+            LONG bitsPerPixel = bmp.bmBitsPixel;
+            LONG bytesPerPixel = bitsPerPixel / 8;
+            LONG rowSize = (width * bytesPerPixel + 3) & ~3;
+            LONG imageSize = rowSize * height;
+
+            // Ensure icon is not null and allocated successfully
+            if (icon == NULL) {
+                CloseHandle(hSnapshot);
+                return 0;
+            }
+
+            icon = malloc(imageSize);
+            if (icon) {
+                GetBitmapBits(iconInfo.hbmColor, imageSize, icon);
+                DeleteObject(iconInfo.hbmColor);
+                DeleteObject(iconInfo.hbmMask);
+                DestroyIcon(hIcon);
+                CloseHandle(hSnapshot);
+                return imageSize;
+            }
+            DeleteObject(iconInfo.hbmColor);
+            DeleteObject(iconInfo.hbmMask);
+        }
+        DestroyIcon(hIcon);
+    }
+
+    CloseHandle(hSnapshot);
+    return 0;
+}

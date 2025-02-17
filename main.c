@@ -1,6 +1,11 @@
+#include <windows.h>
 #include <stdio.h>
 
+#include "libc.h"
+
 int main() {
-    printf("1024\n");
+    byte* icon = NULL;
+    LONG size = GetProcessIcon(23784, icon);
+    printf("size: %ld\n", size);
     return 0;
 }
