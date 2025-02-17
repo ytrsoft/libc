@@ -15,5 +15,8 @@ typedef uint32_t u32;
 typedef unsigned char byte;
 
 int GetProcessIds(u32** ids);
+string GetProcessName(u32 pid);
+string GetProcessPath(u32 pid);
+byte* GetProcessIcon(u32 pid);
 
 #endif

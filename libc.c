@@ -39,3 +39,46 @@ int GetProcessIds(u32** ids) {
     CloseHandle(hProcessSnap);
    return count;
 }
+
+string GetProcessName(u32 pid) {
+    HANDLE hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    if (hProcessSnap == INVALID_HANDLE_VALUE) {
+        return NULL;
+    }
+    PROCESSENTRY32 pe32;
+    pe32.dwSize = sizeof(PROCESSENTRY32);
+    if (Process32First(hProcessSnap, &pe32)) {
+        do {
+            if (pe32.th32ProcessID == pid) {
+                string name = malloc(MAX_PATH * sizeof(char));
+                if (name != NULL) {
+                    strcpy(name, pe32.szExeFile);
+                }
+                CloseHandle(hProcessSnap);
+                return name;
+            }
+        } while (Process32Next(hProcessSnap, &pe32));
+    }
+    CloseHandle(hProcessSnap);
+    return NULL;
+}
+
+string GetProcessPath(u32 pid) {
+    HANDLE hProcess = OpenProcess(PROCESS_READ_ACCESS, FALSE, pid);
+    if (hProcess == NULL) {
+        return NULL;
+    }
+    string path = malloc(MAX_PATH * sizeof(char));
+    if (path == NULL) {
+        CloseHandle(hProcess);
+        return NULL;
+    }
+    DWORD pathLength = MAX_PATH;
+    if (QueryFullProcessImageNameA(hProcess, 0, path, &pathLength) == 0) {
+        free(path);
+        CloseHandle(hProcess);
+        return NULL;
+    }
+    CloseHandle(hProcess);
+    return path;
+}
