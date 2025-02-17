@@ -37,7 +37,7 @@ int GetProcessIds(u32** ids) {
         (*ids)[count++] = pe32.th32ProcessID;
     } while (Process32Next(hProcessSnap, &pe32));
     CloseHandle(hProcessSnap);
-   return count;
+    return count;
 }
 
 string GetProcessName(u32 pid) {
@@ -81,4 +81,24 @@ string GetProcessPath(u32 pid) {
     }
     CloseHandle(hProcess);
     return path;
+}
+
+int ReadMemory(u32 pid, long address, int* value) {
+    HANDLE hProcess = OpenProcess(PROCESS_READ_ACCESS, FALSE, pid);
+    if (hProcess == NULL) {
+        return FALSE;
+    }
+    int status = ReadProcessMemory(hProcess, (LPCVOID)address, value, sizeof(int), NULL);
+    CloseHandle(hProcess);
+    return status;
+}
+
+int WriteMemory(u32 pid, long address, int value) {
+    HANDLE hProcess = OpenProcess(PROCESS_WRITE_ACCESS, FALSE, pid);
+    if (hProcess == NULL) {
+        return FALSE;
+    }
+    int status = WriteProcessMemory(hProcess, (LPVOID)address, &value, sizeof(int), NULL);
+    CloseHandle(hProcess);
+    return status;
 }
