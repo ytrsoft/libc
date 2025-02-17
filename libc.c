@@ -24,15 +24,15 @@ u32 GetProcesses(Process** processes) {
             continue;
         }
         if (p >= capacity) {
-            u32 new_capacity = capacity * 2;
-            Process* t = realloc(*processes, new_capacity * sizeof(Process));
+            u32 cap = capacity * 2;
+            Process* t = realloc(*processes, cap * sizeof(Process));
             if (t == NULL) {
                 free(*processes);
                 CloseHandle(hProcessSnap);
                 return p;
             }
             *processes = t;
-            capacity = new_capacity;
+            capacity = cap;
         }
         (*processes)[p].pid = pe32.th32ProcessID;
         (*processes)[p].ppid = pe32.th32ParentProcessID;
