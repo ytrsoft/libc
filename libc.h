@@ -4,29 +4,29 @@
 #include <stdint.h>
 #include <windows.h>
 
+// 读取进程信息和虚拟内存
+#define PROCESS_READ_ACCESS (PROCESS_QUERY_INFORMATION | PROCESS_VM_READ)
+// 写入进程的虚拟内存
+#define PROCESS_WRITE_ACCESS (PROCESS_VM_WRITE)
+// 终止进程
+#define PROCESS_TERMINATE_ACCESS (PROCESS_TERMINATE)
+// 创建线程
+#define PROCESS_THREAD_ACCESS (PROCESS_CREATE_THREAD)
+// 复制进程句柄
+#define PROCESS_DUP_HANDLE_ACCESS (PROCESS_DUP_HANDLE)
+ // 操作虚拟内存
+#define PROCESS_VM_OPERATION_ACCESS (PROCESS_VM_OPERATION)
+
 typedef uint32_t u32;
-typedef uint64_t u64;
 
-/**
- * 进程
- */
-struct Process {
-    // id
-    DWORD pid;
-    // 父id
-    DWORD ppid;
-    // 位数 32 / 64
-    u32 bits;
-    // 名称
-    char* name;
-    // 路径
-    char* path;
-    // 启动时间
-    u64 st;
-    // 启动图标
-    signed char* si;
+struct _Process_ {
+    // 进程id
+    u32 pid;
+    // 进程父id
+    u32 ppid;
 };
+typedef struct _Process_ Process;
 
-u32 GetProcesses(struct Process** ps);
+u32 GetProcesses(Process** processes);
 
 #endif
